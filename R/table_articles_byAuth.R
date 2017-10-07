@@ -32,13 +32,13 @@ function(pubmed_data, included_authors = "all", max_chars = 500, autofill = TRUE
     out   
   }))
   message(" done!")
-  papers.authors.df <- do.call(rbind, papers.authors.list)
+  papers.authors.df <- dplyr::bind_rows(papers.authors.list)
   keep.rw <- apply(papers.authors.df, 1, (function(rw) {sum(is.na(rw)) < length(rw)}))
   papers.authors.df <- papers.authors.df[keep.rw,]
   #
   if(!is.null(dest_file)){
     if(class(dest_file) == "character" & length(dest_file) == 1){
-      tryCatch(utils::write.table(papers.authors.df, dest_file), error = function(e){NULL})
+      tryCatch(readr::write_csv(papers.authors.df, dest_file), error = function(e){NULL})
     }
   }
   return(papers.authors.df)
